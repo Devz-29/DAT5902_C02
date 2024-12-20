@@ -23,8 +23,13 @@ import seaborn as sns
 
 # -------------------------
 # 1. Distribution of CO2 emissions
-sns.histplot(df['CO2_emission'], kde=True, bins=30)  # Add `kde` and `bins` for better visualization
+sns.histplot(df['CO2_emission'], kde=True, bins=100)  # Add `kde` and `bins` for better visualization
 plt.title('Histogram of CO2 Emissions')
+
+# Set the x-axis range and ticks for 1e9 increments
+plt.xlim(-3e9, 10e9)  # Set the range of the x-axis
+tick_values = np.arange(-3e9, 10.1e9, 1e9)  # Generate tick marks every 1e9
+plt.xticks(tick_values, labels=[f'{int(tick/1e9)}B' for tick in tick_values])  # Format ticks as "X B"
 plt.xlabel('CO2 Emissions')
 plt.ylabel('Frequency')
 plt.grid(True)
