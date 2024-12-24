@@ -111,3 +111,52 @@ plt.xlabel('GDP')
 plt.ylabel('CO2 Emissions')
 plt.show()
 plt.savefig('Linear regression Model GDP vs C02')
+
+import pandas as pd
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
+import matplotlib.cm as cm
+
+# Load data
+df = pd.read_csv('co2_emission.csv')
+df = df.rename(columns={'Annual CO₂ emissions (tonnes )': 'CO2_emission'})
+
+# Load GeoJSON file
+world_geojson = gpd.read_file('countries.geo.json')
+
+# Merge the dataframes on 'id' and 'Code'
+merged_data = world_geojson.merge(df, left_on='id', right_on='Code', how='left')
+
+# Function to create heatmaps using GeoPandas and Matplotlib
+def create_heatmap(data, year, cmap='viridis', output_file=None):
+    # Filter data for the selected year
+    year_data = data[data['Year'] == year]
+    
+    # Normalize CO2 emissions for color scaling
+    norm = Normalize(vmin=year_data['CO2_emission'].min(), vmax=year_data['CO2_emission'].max())
+    color_map = cm.get_cmap(cmap)
+    
+    # Plot
+    fig, ax = plt.subplots(1, 1, figsize=(15, 10))
+    year_data.plot(
+        ax=ax,
+        column='CO2_emission',
+        cmap=color_map,
+        legend=True,
+        legend_kwds={'label': f"CO₂ Emissions {year} (tonnes)", 'orientation': 'vertical'},
+        missing_kwds={"color": "lightgrey", "label": "No Data"}
+    )
+    ax.set_title(f"CO₂ Emissions Heatmap for {year}", fontsize=16)
+    ax.axis('off')
+    
+    # Save or display the map
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Heatmap for {year} saved to {output_file}")
+    plt.show()
+
+# Create heatmaps for 2016 and 1975
+create_heatmap(merged_data, 2016, cmap='cividis', output_file='co2_heatmap_2016.png')
+create_heatmap(merged_data, 1975, cmap='cividis', output_file='co2_heatmap_1975.png')
+
