@@ -114,17 +114,80 @@ plt.savefig('Linear regression Model GDP vs C02')
 
 #displays the geojson map that had to be created in jupyter notebook as ipywidgest is not available otherwise.
 
+import dash
+from dash import  dcc
+from dash import html 
+import pandas as pd
+import geopandas as gpd
+import folium
+from dash.dependencies import Input, Output
 import os
 import webbrowser
+import io
+import base64
 
-# Set the path to the Jupyter notebook
-notebook_path = 'co2_heatmap.ipynb'
+# Load data
+df = pd.read_csv('co2_emission.csv')
+df = df.rename(columns={'Annual CO₂ emissions (tonnes )': 'CO2_emission'})
+world_geojson = gpd.read_file('countries.geo.json')
 
-# Open the notebook in the default web browser using Jupyter
-def open_notebook():
-    os.system(f'jupyter notebook {notebook_path}')
+# Function to update map based on selected year
+def update_map(year):
+    year_data = df[df['Year'] == year]
+    merged_data = world_geojson.merge(year_data, left_on='name', right_on='Entity', how='left')
+    
+    # Creates the map
+    m = folium.Map(location=[20, 0], zoom_start=2)
+    
+    folium.Choropleth(
+        geo_data=world_geojson,
+        name='CO2 Emissions',
+        data=merged_data,
+        columns=['name', 'CO2_emission'],
+        key_on='feature.properties.name',
+        fill_color='YlGnBu',
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name='CO₂ Emissions (tonnes)',
+    ).add_to(m)
+    
+    # Saves to HTML file in a loop
+    map_html = f"co2_heatmap_{year}.html"
+    m.save(map_html)
+    
+    return map_html
 
+# Create Dash app
+app = dash.Dash(__name__)
 
-webbrowser.open(f'file://{os.path.abspath(notebook_path)}')
+# establish Layout of the map
+app.layout = html.Div([
+    html.H1('CO₂ Emission Map'),
+    dcc.Slider(                    # creates the slider to access data from different years
+        id='year-slider',
+        min=df['Year'].min(),            #minimum year for each country
+        max=df['Year'].max(),            # maximum for each country
+        value=2015,
+        marks={year: str(year) for year in range(df['Year'].min(), df['Year'].max() + 1, 1)},
+        step=1,
+    ),
+    html.Div(id='map-container')
+])
 
-open_notebook()
+# Update the map when slider changes
+@app.callback(
+    Output('map-container', 'children'),
+    [Input('year-slider', 'value')]
+)
+def update_map_callback(year):
+    map_file = update_map(year)  # This will now return the path to the saved HTML file
+    return html.Iframe(src=map_file, width='100%', height='600')
+
+# Run the app
+if __name__ == '__main__':
+    # Run the Dash app in a new process
+    import subprocess
+    subprocess.Popen(['python3', 'app.py'])
+
+    # Optionally, open the map in the browser
+    webbrowser.open('http://127.0.0.1:8050')  # Open the map page in the browser
