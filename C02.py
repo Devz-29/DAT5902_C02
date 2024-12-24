@@ -112,56 +112,19 @@ plt.ylabel('CO2 Emissions')
 plt.show()
 plt.savefig('Linear regression Model GDP vs C02')
 
-import folium
-import geopandas as gpd
-import ipywidgets as widgets
-from ipywidgets import interactive
+#displays the geojson map that had to be created in jupyter notebook as ipywidgest is not available otherwise.
 
-world_geojson = gpd.read_file('countries.geo.json')
-
-# Function to update the map based on selected year
-def update_map(year):
-    # Filter the data for the selected year
-    year_data = df[df['Year'] == year]
-    
-    # Merge the emissions data with the GeoJSON file based on the country names
-    world_geojson = world_geojson.merge(year_data, left_on='name', right_on='Entity', how='left')
-    
-    # Create the map
-    m = folium.Map(location=[20, 0], zoom_start=2)
-    
-    # Add the choropleth layer with the emissions data
-    folium.Choropleth(
-        geo_data=world_geojson,
-        name='CO2 Emissions',
-        data=world_geojson,
-        columns=['name', 'CO2_emission'],
-        key_on='feature.properties.name',
-        fill_color='YlGnBu',
-        fill_opacity=0.7,
-        line_opacity=0.2,
-        legend_name='CO₂ Emissions (tonnes)',
-    ).add_to(m)
-    m.save('co2_emission_map.html')
-    return m
-
-year_slider = widgets.IntSlider(
-    value=2015,
-    min=1980,
-    max=2020,
-    step=1,
-    description='Year:',
-    continuous_update=False
-)
-
-# Make the widget interactive
-interactive_map = interactive(update_map, year=year_slider)
-
-
-import webbrowser
 import os
+import webbrowser
 
-html_file_path = os.path.abspath("co2_emission_map.html")
+# Set the path to the Jupyter notebook
+notebook_path = 'co2_heatmap.ipynb'
 
-# Open the HTML file in the default web browser
-webbrowser.open(f"file://{html_file_path}")
+# Open the notebook in the default web browser using Jupyter
+def open_notebook():
+    os.system(f'jupyter notebook {notebook_path}')
+
+
+webbrowser.open(f'file://{notebook_path}')
+
+
