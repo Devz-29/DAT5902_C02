@@ -127,4 +127,4 @@ def open_notebook():
 
 webbrowser.open(f'file://{os.path.abspath(notebook_path)}')
 
-
+open_notebook()
