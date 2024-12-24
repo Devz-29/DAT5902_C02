@@ -125,6 +125,6 @@ def open_notebook():
     os.system(f'jupyter notebook {notebook_path}')
 
 
-webbrowser.open(f'file://{notebook_path}')
+webbrowser.open(f'file://{os.path.abspath(notebook_path)}')
 
 
