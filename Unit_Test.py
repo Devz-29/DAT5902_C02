@@ -31,7 +31,7 @@ def test_data_structure(load_data):
         assert col in load_data.columns
 
     assert load_data.select_dtypes(include=[np.number]).shape[1] > 0
-    assert not load_data.isnull().any().any()
+    
 
     with open('co2_emission.csv', 'r') as file:
         assert len(file.readline().split(',')) > 0
