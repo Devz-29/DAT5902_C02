@@ -109,8 +109,8 @@ plt.plot(X, model.predict(X), color='red')
 plt.title('GDP vs CO2 Emissions')
 plt.xlabel('GDP')
 plt.ylabel('CO2 Emissions')
-plt.show()
 plt.savefig('Linear regression Model GDP vs C02')
+plt.show()
 
 import pandas as pd
 import geopandas as gpd
