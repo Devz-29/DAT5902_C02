@@ -72,7 +72,7 @@ gdp_df = pd.read_csv('gdp-per-capita-worldbank.csv') #To use as an independant v
 gdp_df = gdp_df.rename(columns={'GDP per capita, PPP (constant 2017 international $)': 'GDP'})
 
 
-merged = gdp_df.merge(df, on='Code', how='inner')  # Merge GDP and CO2 emission data on 'Code'
+merged = gdp_df.merge(df, on=['Code', 'Year'], how='inner')  # Merge GDP and CO2 emission data on 'Code'
 
 X = merged['GDP']  # Select GDP as the feature
 y = merged['CO2_emission']  # Select CO2 emissions as the target variable
