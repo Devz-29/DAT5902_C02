@@ -160,3 +160,34 @@ def create_heatmap(data, year, cmap='viridis', output_file=None):
 create_heatmap(merged_data, 2016, cmap='cividis', output_file='co2_heatmap_2016.png')
 create_heatmap(merged_data, 1975, cmap='cividis', output_file='co2_heatmap_1975.png')
 
+# ISO codes for the specified countries
+iso_codes = ['GBR', 'USA', 'CHN', 'IND', 'RUS']
+country_names = {'GBR': 'United Kingdom', 'USA': 'United States', 'CHN': 'China', 'IND': 'India', 'RUS': 'Russia'}
+
+# Filter the dataset for the selected countries
+filtered_df = df[df['Code'].isin(iso_codes)]
+
+# Group by Year and Code, and calculate the total CO₂ emissions
+time_series = filtered_df.groupby(['Year', 'Code'])['CO2_emission'].sum().reset_index()
+
+# Pivot the table to have countries as columns for plotting
+pivot_df = time_series.pivot(index='Year', columns='Code', values='CO2_emission')
+
+# Rename columns to full country names for better readability
+pivot_df.rename(columns=country_names, inplace=True)
+
+# Plotting the time series for selected countries
+plt.figure(figsize=(12, 6))
+for country in pivot_df.columns:
+    plt.plot(pivot_df.index, pivot_df[country], label=country)
+
+# Add labels, title, and legend
+plt.title('CO₂ Emissions Over Time (Selected Countries)', fontsize=16)
+plt.xlabel('Year', fontsize=12)
+plt.ylabel('CO₂ Emissions (tonnes)', fontsize=12)
+plt.legend(title='Country', fontsize=10)
+plt.grid(True)
+
+# Show and save the plot
+plt.savefig('time_series_CO2_emissions.png', dpi=300)
+plt.show()
