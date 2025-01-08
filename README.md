@@ -23,10 +23,7 @@ The repository is organized as follows:
   - `countries.geo.json`: Geographic boundary data for mapping.
 
 - **`scripts/`**: Python scripts for analysis.
-  - `main.py`: Main script for running the full analysis.
-  - `eda.py`: Exploratory Data Analysis and visualization code.
-  - `linear_regression.py`: Linear regression model for GDP vs. CO₂ emissions.
-  - `heatmap.py`: Code to generate geospatial heatmaps.
+  - `CO2.py`: Main script for running the full analysis..
 
 - **`tests/`**: Contains unit tests for validating the analysis.
   - `Unit_Test.py`: Unit tests for data validation and model performance.
