@@ -1,3 +1,17 @@
+"""
+Unit tests for the CO2 emissions analysis project.
+
+This module contains a suite of unit tests to validate the functionality of the CO2 emissions analysis code. The tests cover various aspects of the project, including file handling, data structure, data sufficiency, correlation analysis, and linear regression accuracy.
+
+The `load_data()` fixture loads the CO2 emissions data from a CSV file, while the `generate_test_data()` fixture generates a small test dataset for testing purposes.
+
+The tests include:
+- `test_file_handling()`: Ensures the CO2 emissions data file exists and is in the expected CSV format.
+- `test_data_structure(load_data)`: Verifies the structure of the CO2 emissions data, including the presence of required columns and numeric data.
+- `test_sufficient_data(load_data)`: Checks that the CO2 emissions data has at least two data points.
+- `test_correlation(generate_test_data)`: Ensures the test data has a strong correlation between the 'x' and 'y' variables.
+- `test_linear_regression_accuracy(generate_test_data)`: Validates the accuracy of the linear regression model on the test data.
+"""
 
 import pytest
 import pandas as pd
